@@ -94,6 +94,7 @@ int main(void) {
 
     DDRB |= 0x0F;     // LED en PB0 como salida
     DDRB|=0X30;//LED VERDE ROJO
+    DDRC|=0X03;//MOTOR
 
 
     char filas;
@@ -144,7 +145,7 @@ int main(void) {
         if (filas == 0x0D) { // fila 1 presionada
             if (secuencia == 4) {
                 PORTB |= 0X20; // LED correcto ON
-                PORTC|=0X0F;//motor
+                PORTC|=0X01;//motor
             } else {
                 PORTB |= 0X10; // LED error ON
                 secuencia = 0;
