@@ -83,7 +83,7 @@ int main(void) {
         }
     }
     */
-   #define F_CPU 16000000UL  
+#define F_CPU 16000000UL  
 #include <avr/io.h>  
 #include <util/delay.h>
 
@@ -97,33 +97,44 @@ int main(void) {
 
 
     char filas;
-    char filas1;
+    char secuencia=0;
 
     while (1) {
         PORTD |= 0xF0;    // Todas las columnas en HIGH
         PORTD &= ~0x10;   // Activar solo columna 0 (PD4 en LOW)
         _delay_us(5);     // Estabilización
-
         filas = PIND & 0x0F; // Leemos solo las filas (PD0–PD3)
         
         switch (filas) {
             case 0x0E: // fila 1
-                PORTB = 0x01; // Enciende LED
+            if(secuencia==0){    
+              PORTB = 0x01; // Enciende LED
+                secuencia=1;
+            }
                 break;
 
             case 0x0D: // fila 1
+            if(secuencia==1){ 
                 PORTB = 0x02; // 
+                secuencia=2;
+            }
                 break;
 
             case 0x0B: // fila 1
-                PORTB = 0x04;
+            if(secuencia==2){ 
+            PORTB = 0x04;
+                secuencia=3;
+            }
                 break;
 
             case 0x07: //fila1 
-                PORTB = 0x08;
+            if(secuencia==3){     
+            PORTB = 0x08;
+                secuencia=4;
+            }
                 break;
         }
-
+        
         _delay_ms(50); // Antirebote
     }
 }
