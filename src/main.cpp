@@ -84,35 +84,46 @@ int main(void) {
     }
     */
    #define F_CPU 16000000UL  
-   #include <avr/io.h>  
-   #include <util/delay.h>
-   
-   int main(void) {
-       DDRD |= 0xF0;     
-       DDRD &= ~0x0F;    
-       PORTD |= 0x0F;    
-   
-       DDRB |= 0x01;     
-   
-       char filas;
-   
-       while (1) {
-           PORTD |= 0xF0;    
-           PORTD &= ~0x10;   
-   
-           _delay_us(5);     
-           filas = PIND & 0x0F; 
-           switch (filas) {
-               case 0x0E: 
-                   PORTB = 0x01; 
-                   break;
-   
-               default:
-                   PORTB = 0x00; 
-                   break;
-           }
-   
-           _delay_ms(50); 
-       }
-   }
-   
+#include <avr/io.h>  
+#include <util/delay.h>
+
+int main(void) {
+    DDRD |= 0xF0;     // Columnas (PD4–PD7) como salida
+    DDRD &= ~0x0F;    // Filas (PD0–PD3) como entrada
+    PORTD |= 0x0F;    // Pull-up activado en filas
+
+    DDRB |= 0x0F;     // LED en PB0 como salida
+    DDRB|=0X30;//LED VERDE ROJO
+
+
+    char filas;
+    char filas1;
+
+    while (1) {
+        PORTD |= 0xF0;    // Todas las columnas en HIGH
+        PORTD &= ~0x10;   // Activar solo columna 0 (PD4 en LOW)
+        _delay_us(5);     // Estabilización
+
+        filas = PIND & 0x0F; // Leemos solo las filas (PD0–PD3)
+        
+        switch (filas) {
+            case 0x0E: // fila 1
+                PORTB = 0x01; // Enciende LED
+                break;
+
+            case 0x0D: // fila 1
+                PORTB = 0x02; // 
+                break;
+
+            case 0x0B: // fila 1
+                PORTB = 0x04;
+                break;
+
+            case 0x07: //fila1 
+                PORTB = 0x08;
+                break;
+        }
+
+        _delay_ms(50); // Antirebote
+    }
+}
