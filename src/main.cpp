@@ -144,10 +144,14 @@ int main(void) {
 
         if (filas == 0x0D) { // fila 1 presionada
             if (secuencia == 4) {
-                PORTB |= 0X20; // LED correcto ON
-                PORTC|=0X01;//motor
+                PORTB|= 0X20; // LED correcto ON
+                PORTC=0X01;//motor
+                _delay_ms(3000);
+                PORTC = 0x00;
+                secuencia=0;
             } else {
                 PORTB |= 0X10; // LED error ON
+
                 secuencia = 0;
             }
         }
