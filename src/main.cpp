@@ -102,7 +102,7 @@ int main(void) {
     while (1) {
         PORTD |= 0xF0;    // Todas las columnas en HIGH
         PORTD &= ~0x10;   // Activar solo columna 0 (PD4 en LOW)
-        _delay_us(5);     // Estabilización
+        _delay_us(5);     // 
         filas = PIND & 0x0F; // Leemos solo las filas (PD0–PD3)
         
         switch (filas) {
@@ -134,7 +134,24 @@ int main(void) {
             }
                 break;
         }
-        
-        _delay_ms(50); // Antirebote
+
+        PORTD |= 0xF0;
+        PORTD &= ~0x40;   // tivar columna 2 
+        _delay_us(5);
+
+        filas = PIND & 0x0F;
+
+        if (filas == 0x0D) { // fila 1 presionada
+            if (secuencia == 4) {
+                PORTB |= 0X20; // LED correcto ON
+                PORTC|=0X0F;//motor
+            } else {
+                PORTB |= 0X10; // LED error ON
+                secuencia = 0;
+            }
+        }
+      }
     }
-}
+
+        
+
