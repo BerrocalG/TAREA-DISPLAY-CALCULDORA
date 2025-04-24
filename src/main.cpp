@@ -19,7 +19,7 @@ int main(void) {
 
 }
 */
-
+/*
 #define F_CPU 16000000UL
 #include <avr/io.h>
 #include <util/delay.h>
@@ -42,26 +42,31 @@ int main(void) {
         PORTD |=0X0F;
         PORTC &= ~0x01;     // par apagar el display de decenas
         PORTC |= 0x02;      // para prender el display de unidades
-        PORTB = (PORTB & 0xF0) | ((cuenta % 10) << 4);  // para "desplazar" las unidades a losp ines del deco
+        PORTB = (PORTB & 0x0F) | ((cuenta % 10) << 4);  // para "desplazar" las unidades a losp ines del deco
         _delay_ms(8); //display
 
         // Mostrar decenas
         PORTC &= ~0x02;     // para apagar el display de unidades
         PORTC |= 0x01;      // para prender e display de decenas
-        PORTB = (PORTB & 0xF0) | ((cuenta / 10) << 4);  // para desplazar las decenas a los pines del deco
+        PORTB = (PORTB & 0x0F) | ((cuenta / 10) << 4);  // para desplazar las decenas a los pines del deco
         _delay_ms(8);
 
         // Leer botones
         PORTD|=0XF0;
         PORTD&=~0X10;
-        pulsadores= (!(PIND & 0XF0));
-        switch (pulsadores){
-          case 0X10:
-          PORTD|=0X10;
-          cuenta++;
-          _delay_ms(100);
-          
-          break;
+        pulsadores= (!(PIND & 0XF0)|(0x0F));
+
+        switch(pulsadores){
+
+        case 0x10:
+        cuenta=1;
+        _delay_ms(100);
+        break;
+
+    }
+    }
+  }
+*/
 /*
         if (pulsadores == 0XE1) {  // boton para subir
          
@@ -78,7 +83,36 @@ int main(void) {
         }
     }
     */
-}
-    }
-}
-
+   #define F_CPU 16000000UL  
+   #include <avr/io.h>  
+   #include <util/delay.h>
+   
+   int main(void) {
+       DDRD |= 0xF0;     
+       DDRD &= ~0x0F;    
+       PORTD |= 0x0F;    
+   
+       DDRB |= 0x01;     
+   
+       char filas;
+   
+       while (1) {
+           PORTD |= 0xF0;    
+           PORTD &= ~0x10;   
+   
+           _delay_us(5);     
+           filas = PIND & 0x0F; 
+           switch (filas) {
+               case 0x0E: 
+                   PORTB = 0x01; 
+                   break;
+   
+               default:
+                   PORTB = 0x00; 
+                   break;
+           }
+   
+           _delay_ms(50); 
+       }
+   }
+   
