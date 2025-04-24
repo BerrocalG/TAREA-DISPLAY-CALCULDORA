@@ -28,11 +28,9 @@ int main(void) {
     DDRB |= 0x0F;   // decodificador
     DDRC |= 0x07;   // prendido apagado display
 
-    DDRD |= 0x0F;  // fila salidas
-    DDRD&=~0XF0;     // colunas entrada
+    DDRD &=~ 0x0F;  // fila salidas
+    DDRD|=0XF0;     // colunas entrada
 
-    PORTD |= 0x01;  // Habilitar pull-ups en PB2 y PB3
-    PORTD&=~ 0X03;
 
     //PORTC|=0X07;
 
@@ -41,6 +39,7 @@ int main(void) {
 
     while (1) {
 
+        PORTD |=0X0F;
         PORTC &= ~0x01;     // par apagar el display de decenas
         PORTC |= 0x02;      // para prender el display de unidades
         PORTB = (PORTB & 0xF0) | ((cuenta % 10) << 4);  // para "desplazar" las unidades a losp ines del deco
@@ -53,9 +52,19 @@ int main(void) {
         _delay_ms(8);
 
         // Leer botones
-        pulsadores = (PIND & 0x31); // para indicar uso de los pines pb10 pb11
-
-        if (pulsadores == 0x11) {  // boton para subir
+        PORTD|=0XF0;
+        PORTD&=~0X10;
+        pulsadores= (!(PIND & 0XF0));
+        switch (pulsadores){
+          case 0X10:
+          PORTD|=0X10;
+          cuenta++;
+          _delay_ms(100);
+          
+          break;
+/*
+        if (pulsadores == 0XE1) {  // boton para subir
+         
             cuenta++; //aumenta 1 unidad
             if (cuenta > 99)
             cuenta = 99; //la suma no va sobre pasar los 99
@@ -67,6 +76,9 @@ int main(void) {
             cuenta--;
             _delay_ms(200);
         }
+    }
+    */
+}
     }
 }
 
